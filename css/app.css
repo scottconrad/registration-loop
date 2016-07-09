@@ -1,0 +1,17 @@
+  body{ padding:10px; }
+  div.review{
+    box-sizing:border-box;
+    margin-bottom:20px;
+    background-color:white;
+    padding:10px;
+    -webkit-box-shadow: 10px 10px 123px -12px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 123px -12px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 123px -12px rgba(0,0,0,0.75);
+    border-radius:5px;
+  }
+  div.review:even{
+    background-color:white;
+  }
+  div.review a:hover {
+    cursor:pointer;
+  }
