@@ -73,7 +73,7 @@ $reviews_sources =  [ 0 => 'Molomedia',1=>'Google',2=>'Yelp' ];
                     <strong>Customer Rating: {{review.rating}}</strong><br />
                     <hr />
                     {{review.customer_name}} said:<br />
-                    <a :src="review.customer_url"><h3>{{review.review_source}}</a></h3> - {{getReviewDate(review)}} - {{getReviewSourceById(review.review_from)}}
+                    <a :src="review.customer_url"><h4>from: {{review.review_source}}</a></h4> - {{getReviewDate(review)}} - {{getReviewSourceById(review.review_from)}}
                     <hr />
                     <p>{{review.description}}</p>
 
