@@ -21,7 +21,7 @@ if (typeof Object.assign != 'function') {
 }
 var store = {'showLoader':true};
 if(window && window.RL && window.RL.hasOwnProperty('__state')) store = Object.assign({},window.RL.__state,store);
-var doApiRequest = function(param){
+var doApiRequest = function(){
   store.showLoader = true;
   var params = {'JSON':1,showLoader:true};
   params = Object.assign({},{
@@ -29,10 +29,9 @@ var doApiRequest = function(param){
   },params);
   $.getJSON('/',params,function(data){
     store.reviews = data.reviews;
-  
     store.showLoader = false;
   });
-  
+
 }
 
 store.showLoader = false;
@@ -58,12 +57,12 @@ var app = new Vue({
         },
         getBusinessName:function(){
         return this.getBusinessInfo().business_name;
-          
+
         },
         getReviewDate:function(review){
           var m = new moment(review.get_date_of_submission);
           var formattedDate = m.format('M/D/YYYY');
-          return formattedDate; 
+          return formattedDate;
         },
         updateFromSearchResults:function(data){
           data = this.data;
@@ -91,7 +90,7 @@ var app = new Vue({
           return store.page < (this.getTotalRating().total_no_of_reviews / store.perPageAmount);
         },
         doesPreviousPageExist:function(){
-          
+
           var result = store.page > 0;
           return result;
         },
@@ -113,5 +112,4 @@ var app = new Vue({
         }
     }
 });
-
 })();
