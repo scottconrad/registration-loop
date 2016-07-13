@@ -19,16 +19,17 @@ if (typeof Object.assign != 'function') {
     return target;
   };
 }
-var store = {'showLoader':true};
+
+var store = {'showLoader':true,'review_source':0};
 if(window && window.RL && window.RL.hasOwnProperty('__state')) store = Object.assign({},window.RL.__state,store);
 var doApiRequest = function(){
   store.showLoader = true;
-  var params = {'JSON':1,showLoader:true};
+  var params = {'JSON':1,showLoader:true,'review_from':store.review_source};
   params = Object.assign({},{
     'JSON':1,'page':store.page
   },params);
-  $.getJSON('/',params,function(data){
-    store.reviews = data.reviews;
+  $.getJSON('',params,function(data){
+    store.reviews = Object.assign({},data.reviews);
     store.showLoader = false;
   });
 
@@ -41,6 +42,9 @@ var app = new Vue({
     methods:{
         getReviews:function(){
             return store.reviews;
+        },
+        getReviewSource:function(){
+          return store.review_source;
         },
         getTotalRating:function(){
           return store.business_info.total_rating;
@@ -57,7 +61,6 @@ var app = new Vue({
         },
         getBusinessName:function(){
         return this.getBusinessInfo().business_name;
-
         },
         getReviewDate:function(review){
           var m = new moment(review.get_date_of_submission);
@@ -108,6 +111,10 @@ var app = new Vue({
           this.doSearch(store);
         },
         doSearch:function(){
+          doApiRequest(store);
+        },
+        sourceChanged:function(){
+          store.page = 0;
           doApiRequest(store);
         }
     }

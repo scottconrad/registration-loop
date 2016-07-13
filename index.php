@@ -6,6 +6,13 @@ $page = 0;
 if(isset($_GET) && array_key_exists('page',$_GET)){
     $page = $_GET['page'];
 }
+$review_from = 0;
+if (isset($_GET) && array_key_exists('review_from', $_GET)) {
+    $review_from = $_GET['review_from'];
+}
+
+
+
 $page = (int)$page;
 $http = new GuzzleHttp\Client();
 $offset = $page * 10;
@@ -13,14 +20,20 @@ try{
     $data =
       ['apiKey' => '61067f81f8cf7e4a1f673cd230216112',
         'noOfReviews' => 10,
-        'internal' => 1,
-        'yelp'=> 1,
-        'google' =>1,
         'offset'=>$offset,
         'threshold'=>1,
         'page'=>$page,
         'showLoader'=>false,
+        'review_from'=>$review_from
       ];
+
+    if($review_from ==  0){
+        $data['internal'] = 1;
+    }elseif($review_from == 1){
+        $data['yelp'] = 1;
+    }elseif($review_from == 2){
+        $data['google'] = 1;
+    }
 
 
     $data = array_merge($data,$_GET);
@@ -31,6 +44,7 @@ try{
     $request_data['pages'] = $request_data['business_info']['total_rating']['total_no_of_reviews'] /  $data['noOfReviews'];
     $request_data['page'] = $page;
     $request_data['perPageAmount'] = $data['noOfReviews'];
+    $request_data['review_from'] = $review_from;
     $json = json_encode($request_data,true);
 
 }catch(\Exception $e){
@@ -41,7 +55,7 @@ if(isset($dump_json) && $dump_json){
     print $json;
     exit();
 }
-$reviews_sources =  [ 0 => 'Molomedia',1=>'Google',2=>'Yelp' ];
+$reviews_sources =  [ 0 => 'Molomedia',1=>'Yelp',2=>'Google' ];
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +73,16 @@ $reviews_sources =  [ 0 => 'Molomedia',1=>'Google',2=>'Yelp' ];
     </div>
     <div class="row">
         <div class="col-lg-12"><img src="//www.reputationloop.com/wp-content/uploads/2016/02/RepLoop_logo_260x40.png" alt="reputation loop" /></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <label for="">Source:</label>
+            <select class="form-control" v-on:change="sourceChanged()" id="review_from" v-model="review_source">
+                <?php foreach($reviews_sources as $key => $value){ ?>
+                    <option value="<?=$key; ?>"><?=$value; ?></option>
+                <?php } ?>
+            </select>
+        </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
@@ -88,7 +112,6 @@ $reviews_sources =  [ 0 => 'Molomedia',1=>'Google',2=>'Yelp' ];
 
     </div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.9.3/vue-resource.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
     <script>
         var RL = {
